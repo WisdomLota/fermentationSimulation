@@ -98,12 +98,12 @@ describe('Substrate Rate — substrateRate()', () => {
 
   test('should be 0 when no biomass (nothing to consume substrate)', () => {
     const rate = substrateRate(0, 100, params);
-    expect(rate).toBeCloseTo(0);
+    expect(rate).toBe(0);
   });
 
   test('should be 0 when no substrate (nothing to consume)', () => {
     const rate = substrateRate(5, 0, params);
-    expect(rate).toBeCloseTo(0);
+    expect(rate).toBe(0);
   });
 
   test('consumption rate magnitude should increase with biomass', () => {

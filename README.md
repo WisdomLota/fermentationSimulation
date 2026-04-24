@@ -28,19 +28,20 @@ The simulator implements established kinetic models:
 fermentation-sim/
 ├── src/
 │   ├── models/         # Kinetic models (Monod, Luedeking-Piret)
-│   ├── utils/          # Math utilities, ODE solver
-│   └── __tests__/      # Unit tests
+│   ├── simulation/     # Reactor simulations (Batch, Fed-batch, Continuous)
+│   ├── utils/          # Math utilities, ODE solver (RK4)
+│   ├── __tests__/      # Unit & integration tests
+│   └── demo.ts         # CLI demo runner
 ├── docs/               # Research notes, parameter references
 └── README.md
 ```
 
 ## Getting Started
 
-> *Under active development — Week 1: Research & mathematical modeling*
-
 ```bash
 npm install
-npm test
+npm test          # Run all tests
+npm run demo      # Run batch simulation demo in terminal
 ```
 
 ## Team
