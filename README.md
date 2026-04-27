@@ -17,31 +17,47 @@ The simulator implements established kinetic models:
 | Layer         | Technology             |
 |---------------|------------------------|
 | Frontend      | React.js + TypeScript  |
-| Styling       | Tailwind CSS           |
+| Styling       | Custom CSS (vintage instrument theme) |
 | Visualization | Recharts               |
 | Math Engine   | Custom ODE Solver (RK4)|
+| Build Tool    | Vite                   |
 | Backend       | Node.js + Express      |
 
 ## Project Structure
 
 ```
 fermentation-sim/
-├── src/
-│   ├── models/         # Kinetic models (Monod, Luedeking-Piret)
-│   ├── simulation/     # Reactor simulations (Batch, Fed-batch, Continuous)
-│   ├── utils/          # Math utilities, ODE solver (RK4)
-│   ├── __tests__/      # Unit & integration tests
-│   └── demo.ts         # CLI demo runner
-├── docs/               # Research notes, parameter references
+├── client/                 # React frontend application
+│   ├── src/
+│   │   ├── components/     # UI components (ControlPanel, Charts, Summary)
+│   │   ├── hooks/          # Custom React hooks (useSimulation)
+│   │   ├── lib/            # Client-side simulation engine
+│   │   ├── styles/         # Vintage instrument CSS theme
+│   │   └── types/          # Shared TypeScript types
+│   └── public/
+├── src/                    # Core simulation engine
+│   ├── models/             # Kinetic models (Monod, Luedeking-Piret)
+│   ├── simulation/         # Reactor simulations (Batch, Fed-batch, Continuous)
+│   ├── utils/              # Math utilities, ODE solver (RK4)
+│   ├── __tests__/          # Unit & integration tests
+│   └── demo.ts             # CLI demo runner
+├── docs/                   # Research notes, parameter references
 └── README.md
 ```
 
 ## Getting Started
 
 ```bash
+# Backend / simulation engine
 npm install
 npm test          # Run all tests
 npm run demo      # Run batch simulation demo in terminal
+
+# Frontend (Vite + React)
+cd client
+npm install
+npm run dev       # Launch Vite dev server at http://localhost:3000
+npm run build     # Production build to client/dist/
 ```
 
 ## Team

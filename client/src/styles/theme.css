@@ -1,0 +1,482 @@
+/*
+ * FERMENTATION SIMULATION — Vintage Scientific Instrument Theme
+ *
+ * Design inspiration:
+ *   - Brass and copper laboratory instruments (1960s–70s)
+ *   - Graph paper and engineering grid notebooks
+ *   - Analog oscilloscope screens (green/amber phosphor glow)
+ *   - Bakelite knobs and brushed metal panels
+ *   - Scientific journal typography (serif headings, mono data)
+ *
+ * The goal is to feel like a piece of beautifully maintained
+ * lab equipment — precise, warm, and slightly tactile.
+ */
+
+/* ─── CSS Variables ─────────────────────────────────── */
+
+:root {
+  /* Instrument panel colors */
+  --panel-bg: #1a1a1e;
+  --panel-surface: #222228;
+  --panel-raised: #2a2a32;
+  --panel-inset: #141418;
+  --panel-border: #3a3a42;
+
+  /* Brass / copper accents */
+  --brass-primary: #c8a84e;
+  --brass-light: #dfc06a;
+  --brass-muted: #8a7a3c;
+  --copper-warm: #b87333;
+  --copper-glow: #d4956b;
+
+  /* Phosphor screen colors (for charts) */
+  --phosphor-green: #39ff7e;
+  --phosphor-amber: #ffbf47;
+  --phosphor-blue: #47b4ff;
+  --phosphor-red: #ff6b6b;
+  --screen-bg: #0a0f0a;
+  --screen-grid: #1a2e1a;
+
+  /* Text hierarchy */
+  --text-primary: #e8e4d8;
+  --text-secondary: #9a9688;
+  --text-muted: #605e56;
+  --text-label: #c8a84e;
+  --text-value: #e8e4d8;
+  --text-unit: #7a7668;
+
+  /* Status colors */
+  --status-running: #39ff7e;
+  --status-idle: #605e56;
+  --status-error: #ff6b6b;
+
+  /* Spacing */
+  --gap-xs: 4px;
+  --gap-sm: 8px;
+  --gap-md: 16px;
+  --gap-lg: 24px;
+  --gap-xl: 32px;
+
+  /* Typography */
+  --font-display: 'DM Serif Display', 'Georgia', serif;
+  --font-body: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+
+  /* Borders */
+  --border-panel: 1px solid var(--panel-border);
+  --border-inset: 1px solid #111115;
+  --border-radius: 4px;
+  --border-radius-lg: 8px;
+}
+
+/* ─── Reset & Base ──────────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--panel-bg);
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── App Layout ────────────────────────────────────── */
+
+.app-container {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+  gap: 0;
+}
+
+.app-header {
+  grid-column: 1 / -1;
+  background: var(--panel-surface);
+  border-bottom: var(--border-panel);
+  padding: var(--gap-md) var(--gap-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--brass-primary);
+  letter-spacing: 0.5px;
+}
+
+.app-subtitle {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--status-idle);
+  transition: background 0.3s ease;
+}
+
+.status-dot.running {
+  background: var(--status-running);
+  box-shadow: 0 0 8px var(--status-running);
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+.status-dot.complete {
+  background: var(--phosphor-green);
+  box-shadow: 0 0 4px var(--phosphor-green);
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ─── Control Panel (Left Sidebar) ──────────────────── */
+
+.control-panel {
+  background: var(--panel-surface);
+  border-right: var(--border-panel);
+  overflow-y: auto;
+  padding: var(--gap-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+}
+
+.panel-section {
+  background: var(--panel-raised);
+  border: var(--border-panel);
+  border-radius: var(--border-radius-lg);
+  padding: var(--gap-md);
+}
+
+.section-header {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--brass-muted);
+  margin-bottom: var(--gap-md);
+  padding-bottom: var(--gap-sm);
+  border-bottom: 1px solid var(--panel-border);
+}
+
+/* ─── Mode Selector ─────────────────────────────────── */
+
+.mode-selector {
+  display: flex;
+  gap: 2px;
+  background: var(--panel-inset);
+  border-radius: var(--border-radius);
+  padding: 2px;
+}
+
+.mode-btn {
+  flex: 1;
+  padding: 8px 4px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.mode-btn:hover {
+  color: var(--text-secondary);
+  background: rgba(200, 168, 78, 0.08);
+}
+
+.mode-btn.active {
+  background: var(--panel-raised);
+  color: var(--brass-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.mode-btn.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ─── Parameter Controls ────────────────────────────── */
+
+.param-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  margin-bottom: var(--gap-md);
+}
+
+.param-row:last-child {
+  margin-bottom: 0;
+}
+
+.param-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.param-name {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+}
+
+.param-value-display {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--brass-light);
+}
+
+.param-unit {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-left: 3px;
+}
+
+/* Slider — styled to look like a brass potentiometer track */
+.param-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: var(--panel-inset);
+  border-radius: 2px;
+  outline: none;
+  border: 1px solid var(--panel-border);
+}
+
+.param-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: linear-gradient(135deg, var(--brass-light), var(--brass-muted));
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid var(--panel-bg);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  transition: transform 0.15s ease;
+}
+
+.param-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+.param-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: linear-gradient(135deg, var(--brass-light), var(--brass-muted));
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid var(--panel-bg);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* ─── Visualization Area (Main) ─────────────────────── */
+
+.viz-area {
+  background: var(--panel-bg);
+  padding: var(--gap-lg);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+}
+
+/* Chart container — looks like an oscilloscope screen */
+.chart-panel {
+  background: var(--screen-bg);
+  border: 2px solid var(--panel-border);
+  border-radius: var(--border-radius-lg);
+  padding: var(--gap-md);
+  position: relative;
+  /* Subtle scanline effect */
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.01) 2px,
+      rgba(255, 255, 255, 0.01) 4px
+    );
+  background-size: 100% 4px;
+}
+
+.chart-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: var(--border-radius-lg);
+  pointer-events: none;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.chart-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--brass-muted);
+  margin-bottom: var(--gap-sm);
+}
+
+/* ─── Summary Cards ─────────────────────────────────── */
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--gap-md);
+}
+
+.summary-card {
+  background: var(--panel-surface);
+  border: var(--border-panel);
+  border-radius: var(--border-radius-lg);
+  padding: var(--gap-md);
+  text-align: center;
+}
+
+.summary-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  margin-bottom: var(--gap-xs);
+}
+
+.summary-value {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--text-value);
+  line-height: 1;
+}
+
+.summary-unit {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.summary-value.highlight {
+  color: var(--phosphor-green);
+}
+
+/* ─── Run Button ────────────────────────────────────── */
+
+.run-button {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, var(--brass-muted), var(--brass-primary));
+  color: var(--panel-bg);
+  border: none;
+  border-radius: var(--border-radius);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(200, 168, 78, 0.2);
+}
+
+.run-button:hover {
+  background: linear-gradient(135deg, var(--brass-primary), var(--brass-light));
+  box-shadow: 0 2px 12px rgba(200, 168, 78, 0.4);
+  transform: translateY(-1px);
+}
+
+.run-button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(200, 168, 78, 0.2);
+}
+
+.reset-button {
+  width: 100%;
+  padding: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--border-radius);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reset-button:hover {
+  color: var(--text-secondary);
+  border-color: var(--text-muted);
+}
+
+/* ─── Tooltip ───────────────────────────────────────── */
+
+.tooltip-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--panel-border);
+  color: var(--text-muted);
+  font-size: 9px;
+  font-family: var(--font-mono);
+  cursor: help;
+  margin-left: var(--gap-xs);
+}
+
+/* ─── Responsive ────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .app-container {
+    grid-template-columns: 1fr;
+  }
+
+  .control-panel {
+    border-right: none;
+    border-bottom: var(--border-panel);
+  }
+
+  .summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
