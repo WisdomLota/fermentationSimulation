@@ -70,19 +70,19 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
       <div className="panel-section">
         <div className="section-header">Bioreactor Conditions</div>
 
-        <ParameterSlider
-          name="temperature"
-          value={conditions.temperature}
-          {...PARAM_RANGES.temperature}
-          onChange={(_, v) => onConditionsChange('temperature', v)}
-        />
+        <div className="param-row">
+          <div className="param-label">
+            <span className="param-name">Temperature</span>
+            <span className="param-value-display">32.5<span className="param-unit">°C</span></span>
+          </div>
+        </div>
 
-        <ParameterSlider
-          name="pH"
-          value={conditions.pH}
-          {...PARAM_RANGES.pH}
-          onChange={(_, v) => onConditionsChange('pH', v)}
-        />
+        <div className="param-row">
+          <div className="param-label">
+            <span className="param-name">pH</span>
+            <span className="param-value-display">4.8</span>
+          </div>
+        </div>
 
         <ParameterSlider
           name="S0"
@@ -99,44 +99,44 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
         />
       </div>
 
-      {/* ── Kinetic Parameters ── */}
+      {/* ── Kinetic Parameters (Constants) ── */}
       <div className="panel-section">
         <div className="section-header">Kinetic Parameters</div>
 
-        <ParameterSlider
-          name="muMax"
-          value={kinetics.muMax}
-          {...PARAM_RANGES.muMax}
-          onChange={(_, v) => onKineticsChange('muMax', v)}
-        />
+        <div className="param-row">
+          <div className="param-label">
+            <span className="param-name">μ_max</span>
+            <span className="param-value-display">{kinetics.muMax}<span className="param-unit">h⁻¹</span></span>
+          </div>
+        </div>
 
-        <ParameterSlider
-          name="Ks"
-          value={kinetics.Ks}
-          {...PARAM_RANGES.Ks}
-          onChange={(_, v) => onKineticsChange('Ks', v)}
-        />
+        <div className="param-row">
+          <div className="param-label">
+            <span className="param-name">K_s</span>
+            <span className="param-value-display">{kinetics.Ks}<span className="param-unit">g/L</span></span>
+          </div>
+        </div>
 
-        <ParameterSlider
-          name="alpha"
-          value={kinetics.alpha}
-          {...PARAM_RANGES.alpha}
-          onChange={(_, v) => onKineticsChange('alpha', v)}
-        />
+        <div className="param-row">
+          <div className="param-label">
+            <span className="param-name">α (growth-assoc.)</span>
+            <span className="param-value-display">{kinetics.alpha}<span className="param-unit">g/g</span></span>
+          </div>
+        </div>
 
-        <ParameterSlider
-          name="beta"
-          value={kinetics.beta}
-          {...PARAM_RANGES.beta}
-          onChange={(_, v) => onKineticsChange('beta', v)}
-        />
+        <div className="param-row">
+          <div className="param-label">
+            <span className="param-name">β (maintenance)</span>
+            <span className="param-value-display">{kinetics.beta}<span className="param-unit">g/(g·h)</span></span>
+          </div>
+        </div>
 
-        <ParameterSlider
-          name="Yxs"
-          value={kinetics.Yxs}
-          {...PARAM_RANGES.Yxs}
-          onChange={(_, v) => onKineticsChange('Yxs', v)}
-        />
+        <div className="param-row">
+          <div className="param-label">
+            <span className="param-name">Y_xs</span>
+            <span className="param-value-display">{kinetics.Yxs}<span className="param-unit">g/g</span></span>
+          </div>
+        </div>
       </div>
 
       {/* ── Simulation Settings ── */}
