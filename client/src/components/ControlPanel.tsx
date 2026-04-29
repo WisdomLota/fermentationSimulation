@@ -24,6 +24,7 @@ interface ControlPanelProps {
   onConditionsChange: (key: string, value: number) => void;
   onConfigChange: (key: string, value: number) => void;
   onReset: () => void;
+  children?: React.ReactNode;
 }
 
 export const ControlPanel: React.FC<ControlPanelProps> = ({
@@ -36,6 +37,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   onConditionsChange,
   onConfigChange,
   onReset,
+  children,
 }) => {
   return (
     <aside className="control-panel">
@@ -79,7 +81,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
 
         <div className="param-row">
           <div className="param-label">
-            <span className="param-name">pH</span>
+            <span className="param-name">pH Level</span>
             <span className="param-value-display">4.8</span>
           </div>
         </div>
@@ -99,7 +101,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
         />
       </div>
 
-      {/* ── Kinetic Parameters (Constants) ── */}
+      {/* ── Kinetic Parameters ── */}
       <div className="panel-section">
         <div className="section-header">Kinetic Parameters</div>
 
@@ -157,6 +159,9 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           ↻ Reset Parameters
         </button>
       </div>
+
+      {/* Injected children (e.g. PresetSelector) */}
+      {children}
     </aside>
   );
 };

@@ -27,15 +27,19 @@ The simulator implements established kinetic models:
 
 ```
 fermentation-sim/
-├── client/                 # React frontend application
+├── client/                 # React frontend (Vite)
 │   ├── src/
-│   │   ├── components/     # UI components (ControlPanel, Charts, Summary)
+│   │   ├── components/     # UI components (ControlPanel, Charts, Presets, Phases)
 │   │   ├── hooks/          # Custom React hooks (useSimulation)
 │   │   ├── lib/            # Client-side simulation engine
 │   │   ├── styles/         # Vintage instrument CSS theme
 │   │   └── types/          # Shared TypeScript types
-│   └── public/
-├── src/                    # Core simulation engine
+│   └── index.html
+├── server/                 # Express.js backend API
+│   └── src/
+│       ├── routes/         # API endpoints (simulation, presets)
+│       └── middleware/     # Request logger
+├── src/                    # Core simulation engine & tests
 │   ├── models/             # Kinetic models (Monod, Luedeking-Piret)
 │   ├── simulation/         # Reactor simulations (Batch, Fed-batch, Continuous)
 │   ├── utils/              # Math utilities, ODE solver (RK4)
@@ -48,15 +52,20 @@ fermentation-sim/
 ## Getting Started
 
 ```bash
-# Backend / simulation engine
+# Core simulation engine & tests
 npm install
 npm test          # Run all tests
 npm run demo      # Run batch simulation demo in terminal
 
-# Frontend (Vite + React)
+# Backend API server
+cd server
+npm install
+npm run dev       # Express API at http://localhost:3001
+
+# Frontend (Vite + React) — in a separate terminal
 cd client
 npm install
-npm run dev       # Launch Vite dev server at http://localhost:3000
+npm run dev       # Vite dev server at http://localhost:3000
 npm run build     # Production build to client/dist/
 ```
 

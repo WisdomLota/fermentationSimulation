@@ -18,6 +18,8 @@ import { useState, useCallback } from 'react';
 import { ControlPanel } from './components/ControlPanel';
 import { ConcentrationChart } from './components/ConcentrationChart';
 import { SummaryPanel } from './components/SummaryPanel';
+import { PresetSelector } from './components/PresetSelector';
+import { GrowthPhaseIndicator } from './components/GrowthPhaseIndicator';
 import { useSimulation } from './hooks/useSimulation';
 import type { ReactorMode, KineticParams, ReactorConditions, SimConfig } from './types/simulation';
 
@@ -82,6 +84,12 @@ function App() {
     setConfig(DEFAULT_CONFIG);
   }, []);
 
+  const handlePresetSelect = useCallback((k: KineticParams, c: ReactorConditions, cfg: SimConfig) => {
+    setKinetics(k);
+    setConditions(c);
+    setConfig(cfg);
+  }, []);
+
   return (
     <div className="app-container">
       {/* ── Header ── */}
@@ -116,7 +124,9 @@ function App() {
         onConditionsChange={handleConditionsChange}
         onConfigChange={handleConfigChange}
         onReset={handleReset}
-      />
+      >
+        <PresetSelector onSelect={handlePresetSelect} />
+      </ControlPanel>
 
       {/* ── Visualization Area (Main) ── */}
       <main className="viz-area">
@@ -156,6 +166,9 @@ function App() {
               title="Specific Growth Rate (μ) vs Time"
               curves={RATE_CURVES}
             />
+
+            {/* Growth Phase Timeline */}
+            <GrowthPhaseIndicator data={data} muMax={kinetics.muMax} />
 
             {/* Summary Cards */}
             <SummaryPanel summary={data.summary} />

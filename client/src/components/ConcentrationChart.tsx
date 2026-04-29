@@ -88,11 +88,11 @@ export const ConcentrationChart: React.FC<ConcentrationChartProps> = ({
           <XAxis
             dataKey="time"
             stroke="#605e56"
-            tickFormatter={(val) => Math.round(val).toString()}
             type="number"
             domain={[0, 48]}
-            ticks={[0, 2, 4, 6, 8, 10, 12, 16, 20, 24, 30, 36, 42, 48]}
+            ticks={[0, 6, 12, 18, 24, 30, 36, 42, 48]}
             allowDecimals={false}
+            tickFormatter={(val) => Math.round(val).toString()}
             tick={{ fill: '#7a7668', fontSize: 10, fontFamily: '"IBM Plex Mono", monospace' }}
             label={{
               value: 'Time (hours)',
