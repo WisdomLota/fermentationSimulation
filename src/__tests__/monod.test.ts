@@ -9,7 +9,6 @@
 import { monodGrowthRate, biomassRate, substrateRate } from '../models/monod';
 import { DEFAULT_KINETIC_PARAMS } from '../models/parameters';
 import type { KineticParameters } from '../models/parameters';
-import { describe, test, expect } from '@jest/globals';
 
 const params = DEFAULT_KINETIC_PARAMS;
 

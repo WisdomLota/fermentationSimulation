@@ -10,7 +10,6 @@
 
 import { productRate, yieldEfficiency } from '../models/luedekingPiret';
 import { DEFAULT_KINETIC_PARAMS } from '../models/parameters';
-import { describe, test, expect } from '@jest/globals';
 
 const params = DEFAULT_KINETIC_PARAMS;
 

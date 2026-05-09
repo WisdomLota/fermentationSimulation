@@ -1,23 +1,12 @@
 /**
- * useSimulation Hook
- *
- * Manages the simulation lifecycle:
- *  1. Takes kinetic parameters + conditions as input
- *  2. Runs the simulation engine when inputs change
- *  3. Provides reactive output data for chart components
- *
- * Uses a small debounce so the simulation doesn't re-run on every
- * keystroke while the user is adjusting a slider.
+ * useSimulation Hook — Supports all three reactor modes
  */
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { runBatchSimulation } from '../lib/simulation-engine';
+import { runBatchSimulation, runFedBatchSimulation, runContinuousSimulation } from '../lib/simulation-engine';
 import type {
-  KineticParams,
-  ReactorConditions,
-  SimConfig,
-  SimulationOutput,
-  ReactorMode,
+  KineticParams, ReactorConditions, SimConfig,
+  SimulationOutput, ReactorMode, FedBatchConfig, ContinuousConfig,
 } from '../types/simulation';
 
 interface UseSimulationProps {
@@ -25,50 +14,51 @@ interface UseSimulationProps {
   kinetics: KineticParams;
   conditions: ReactorConditions;
   config: SimConfig;
+  fedBatchConfig: FedBatchConfig;
+  continuousConfig: ContinuousConfig;
 }
 
 interface UseSimulationReturn {
   data: SimulationOutput | null;
   isRunning: boolean;
   error: string | null;
-  runTime: number | null;    // ms
+  runTime: number | null;
   dataPoints: number | null;
 }
 
 export function useSimulation({
-  mode,
-  kinetics,
-  conditions,
-  config,
+  mode, kinetics, conditions, config, fedBatchConfig, continuousConfig,
 }: UseSimulationProps): UseSimulationReturn {
   const [data, setData] = useState<SimulationOutput | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [runTime, setRunTime] = useState<number | null>(null);
   const [dataPoints, setDataPoints] = useState<number | null>(null);
-
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
   const runSimulation = useCallback(() => {
     setIsRunning(true);
     setError(null);
-
     try {
       const start = performance.now();
-
       let result: SimulationOutput;
 
-      if (mode === 'batch') {
-        result = runBatchSimulation(kinetics, conditions, config);
-      } else {
-        // Fed-batch and continuous modes will be added in Week 5
-        throw new Error(`${mode} mode not yet implemented`);
+      switch (mode) {
+        case 'batch':
+          result = runBatchSimulation(kinetics, conditions, config);
+          break;
+        case 'fed-batch':
+          result = runFedBatchSimulation(kinetics, conditions, config, fedBatchConfig);
+          break;
+        case 'continuous':
+          result = runContinuousSimulation(kinetics, conditions, config, continuousConfig);
+          break;
+        default:
+          throw new Error(`Unknown mode: ${mode}`);
       }
 
-      const elapsed = performance.now() - start;
-
       setData(result);
-      setRunTime(Math.round(elapsed));
+      setRunTime(Math.round(performance.now() - start));
       setDataPoints(result.time.length);
       setError(null);
     } catch (err) {
@@ -77,15 +67,12 @@ export function useSimulation({
     } finally {
       setIsRunning(false);
     }
-  }, [mode, kinetics, conditions, config]);
+  }, [mode, kinetics, conditions, config, fedBatchConfig, continuousConfig]);
 
-  // Debounced auto-run when inputs change
   useEffect(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(runSimulation, 150);
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
   }, [runSimulation]);
 
   return { data, isRunning, error, runTime, dataPoints };

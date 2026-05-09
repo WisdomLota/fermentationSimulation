@@ -24,7 +24,7 @@ import { presetsRouter } from './routes/presets';
 import { requestLogger } from './middleware/logger';
 
 const app = express();
-const PORT = process.env.PORT || 3005;
+const PORT = process.env.PORT || 3001;
 
 // ── Middleware ─────────────────────────────────────────
 

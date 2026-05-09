@@ -33,7 +33,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   conditions,
   config,
   onModeChange,
-  onKineticsChange,
   onConditionsChange,
   onConfigChange,
   onReset,
@@ -52,16 +51,14 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
             Batch
           </button>
           <button
-            className={`mode-btn ${mode === 'fed-batch' ? 'active' : 'disabled'}`}
-            onClick={() => {}} // Week 5
-            title="Coming in Week 5"
+            className={`mode-btn ${mode === 'fed-batch' ? 'active' : ''}`}
+            onClick={() => onModeChange('fed-batch')}
           >
             Fed-Batch
           </button>
           <button
-            className={`mode-btn ${mode === 'continuous' ? 'active' : 'disabled'}`}
-            onClick={() => {}} // Week 5
-            title="Coming in Week 5"
+            className={`mode-btn ${mode === 'continuous' ? 'active' : ''}`}
+            onClick={() => onModeChange('continuous')}
           >
             Continuous
           </button>

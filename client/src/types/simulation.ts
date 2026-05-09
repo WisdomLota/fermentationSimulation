@@ -126,3 +126,31 @@ export const PARAM_RANGES: Record<string, ParameterRange> = {
     tooltip: 'Total fermentation duration.',
   },
 };
+
+// ── Fed-Batch specific config ─────────────────────────
+
+export interface FedBatchConfig {
+  feedRate: number;          // L/h
+  feedSubstrate: number;     // g/L — concentration of feed
+  initialVolume: number;     // L
+  maxVolume: number;         // L
+}
+
+export const DEFAULT_FEDBATCH_CONFIG: FedBatchConfig = {
+  feedRate: 0.1,
+  feedSubstrate: 500,
+  initialVolume: 1.0,
+  maxVolume: 3.0,
+};
+
+// ── Continuous (CSTR) specific config ─────────────────
+
+export interface ContinuousConfig {
+  dilutionRate: number;      // h⁻¹ — D = F/V
+  feedSubstrate: number;     // g/L
+}
+
+export const DEFAULT_CONTINUOUS_CONFIG: ContinuousConfig = {
+  dilutionRate: 0.15,
+  feedSubstrate: 100,
+};

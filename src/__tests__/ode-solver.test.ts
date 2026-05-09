@@ -11,7 +11,6 @@
  */
 
 import { rk4Step, integrate } from '../utils/ode-solver';
-import { describe, test, expect } from '@jest/globals';
 
 describe('RK4 Single Step — rk4Step()', () => {
 
