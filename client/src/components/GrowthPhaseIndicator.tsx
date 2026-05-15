@@ -57,6 +57,20 @@ export const GrowthPhaseIndicator: React.FC<GrowthPhaseIndicatorProps> = ({ data
       }
     }
 
+    // Detect death/decline phase: biomass actively decreasing
+    let declineStart = 0;
+    if (decelerationEnd > 0) {
+      const startIdx = data.time.findIndex(t => t >= decelerationEnd);
+      if (startIdx > 0) {
+        for (let j = startIdx; j < data.biomass.length - 1; j++) {
+          if (data.biomass[j + 1] < data.biomass[j] * 0.998) {
+            declineStart = data.time[j];
+            break;
+          }
+        }
+      }
+    }
+
     // Defaults if thresholds weren't crossed
     if (lagEnd === 0) lagEnd = totalTime * 0.05;
     if (exponentialEnd === 0) exponentialEnd = totalTime * 0.6;
@@ -65,7 +79,13 @@ export const GrowthPhaseIndicator: React.FC<GrowthPhaseIndicatorProps> = ({ data
     result.push({ name: 'Lag', startTime: 0, endTime: lagEnd, color: '#605e56' });
     result.push({ name: 'Exponential', startTime: lagEnd, endTime: exponentialEnd, color: '#39ff7e' });
     result.push({ name: 'Deceleration', startTime: exponentialEnd, endTime: decelerationEnd, color: '#ffbf47' });
-    result.push({ name: 'Stationary', startTime: decelerationEnd, endTime: totalTime, color: '#47b4ff' });
+
+    if (declineStart > 0) {
+      result.push({ name: 'Stationary', startTime: decelerationEnd, endTime: declineStart, color: '#47b4ff' });
+      result.push({ name: 'Death', startTime: declineStart, endTime: totalTime, color: '#ff6b6b' });
+    } else {
+      result.push({ name: 'Stationary', startTime: decelerationEnd, endTime: totalTime, color: '#47b4ff' });
+    }
 
     return result;
   }, [data, muMax]);

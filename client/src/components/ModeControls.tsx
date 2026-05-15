@@ -44,6 +44,12 @@ export const FedBatchControls: React.FC<FedBatchControlsProps> = ({ config, onCh
       tooltip="Feed stops when reactor reaches this volume."
       onChange={(_, v) => onChange('maxVolume', v)}
     />
+    <ParameterSlider
+      name="feedStartTime" label="Feed start time" value={config.feedStartTime}
+      min={0} max={48} step={1} unit="h"
+      tooltip="Hour when feeding begins. Before this, reactor runs as batch."
+      onChange={(_, v) => onChange('feedStartTime', v)}
+    />
   </div>
 );
 
@@ -58,16 +64,14 @@ interface ContinuousControlsProps {
 export const ContinuousControls: React.FC<ContinuousControlsProps> = ({ config, muMax, onChange }) => {
   // Calculate critical dilution rate
   const Dcrit = muMax * config.feedSubstrate / (1.5 + config.feedSubstrate);
-  const isNearWashout = config.dilutionRate > Dcrit * 0.85;
-  const isWashout = config.dilutionRate >= Dcrit;
 
   return (
     <div className="panel-section">
       <div className="section-header">Continuous (CSTR) parameters</div>
       <ParameterSlider
-        name="dilutionRate" label="Dilution rate (D)" value={config.dilutionRate}
-        min={0.01} max={0.6} step={0.01} unit="h⁻¹"
-        tooltip={`D = F/V. Must be below μ_max (${muMax}) to avoid washout.`}
+        name="dilutionRate" label="Dilution rate (D)" value={Math.min(config.dilutionRate, Dcrit * 0.95)}
+        min={0.01} max={Number((Dcrit * 0.95).toFixed(2))} step={0.01} unit="h⁻¹"
+        tooltip={`D = F/V. Capped at 95% of D_crit (${Dcrit.toFixed(3)}).`}
         onChange={(_, v) => onChange('dilutionRate', v)}
       />
       <ParameterSlider
@@ -76,25 +80,26 @@ export const ContinuousControls: React.FC<ContinuousControlsProps> = ({ config, 
         tooltip="Substrate concentration in the feed."
         onChange={(_, v) => onChange('feedSubstrate', v)}
       />
+      <ParameterSlider
+        name="batchStartupTime" label="Batch startup phase" value={config.batchStartupTime}
+        min={1} max={48} step={1} unit="h"
+        tooltip="Hours of batch operation before continuous flow begins. Lets cells grow first."
+        onChange={(_, v) => onChange('batchStartupTime', v)}
+      />
 
       {/* Washout warning */}
-      {isNearWashout && (
-        <div style={{
-          marginTop: '8px',
-          padding: '8px 10px',
-          background: isWashout ? 'rgba(255, 107, 107, 0.12)' : 'rgba(255, 191, 71, 0.12)',
-          border: `1px solid ${isWashout ? 'rgba(255, 107, 107, 0.3)' : 'rgba(255, 191, 71, 0.3)'}`,
-          borderRadius: '4px',
-          fontFamily: 'var(--font-mono)',
-          fontSize: '10px',
-          color: isWashout ? '#ff6b6b' : '#ffbf47',
-        }}>
-          {isWashout
-            ? `⚠ WASHOUT: D (${config.dilutionRate.toFixed(2)}) ≥ D_crit (${Dcrit.toFixed(2)}). Cells will be washed out.`
-            : `⚡ Near washout: D_crit = ${Dcrit.toFixed(2)} h⁻¹`
-          }
-        </div>
-      )}
+      <div style={{
+        marginTop: '8px',
+        padding: '6px 10px',
+        background: 'rgba(71, 180, 255, 0.08)',
+        border: '1px solid rgba(71, 180, 255, 0.2)',
+        borderRadius: '4px',
+        fontFamily: 'var(--font-mono)',
+        fontSize: '10px',
+        color: '#47b4ff',
+      }}>
+        D_crit = {Dcrit.toFixed(3)} h⁻¹ — slider capped at 95%
+      </div>
     </div>
   );
 };

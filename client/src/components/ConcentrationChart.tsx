@@ -89,13 +89,17 @@ export const ConcentrationChart: React.FC<ConcentrationChartProps> = ({
             dataKey="time"
             stroke="#605e56"
             type="number"
-            domain={[0, 48]}
-            ticks={[0, 6, 12, 18, 24, 30, 36, 42, 48]}
+            domain={[0, data.time[data.time.length - 1]]}
+            tickCount={9}
             allowDecimals={false}
-            tickFormatter={(val) => Math.round(val).toString()}
+            tickFormatter={(val: number) => {
+              const maxT = data.time[data.time.length - 1];
+              if (maxT > 168) return `${Math.round(val / 24)}d`;
+              return Math.round(val).toString();
+            }}
             tick={{ fill: '#7a7668', fontSize: 10, fontFamily: '"IBM Plex Mono", monospace' }}
             label={{
-              value: 'Time (hours)',
+              value: data.time[data.time.length - 1] > 168 ? 'Time (days)' : 'Time (hours)',
               position: 'insideBottom',
               offset: -2,
               style: { fill: '#605e56', fontSize: 10, fontFamily: '"IBM Plex Mono", monospace' },

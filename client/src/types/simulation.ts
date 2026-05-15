@@ -121,9 +121,9 @@ export const PARAM_RANGES: Record<string, ParameterRange> = {
     tooltip: 'Biomass yield on substrate.',
   },
   totalTime: {
-    min: 12, max: 96, step: 6, default: 48,
+    min: 24, max: 2160, step: 24, default: 48,
     unit: 'hours', label: 'Simulation Time',
-    tooltip: 'Total fermentation duration.',
+    tooltip: 'Total duration. 24h = 1 day, 720h = 30 days.',
   },
 };
 
@@ -134,6 +134,7 @@ export interface FedBatchConfig {
   feedSubstrate: number;     // g/L — concentration of feed
   initialVolume: number;     // L
   maxVolume: number;         // L
+  feedStartTime: number;     // hours — when feeding begins
 }
 
 export const DEFAULT_FEDBATCH_CONFIG: FedBatchConfig = {
@@ -141,6 +142,7 @@ export const DEFAULT_FEDBATCH_CONFIG: FedBatchConfig = {
   feedSubstrate: 500,
   initialVolume: 1.0,
   maxVolume: 3.0,
+  feedStartTime: 6,
 };
 
 // ── Continuous (CSTR) specific config ─────────────────
@@ -148,9 +150,11 @@ export const DEFAULT_FEDBATCH_CONFIG: FedBatchConfig = {
 export interface ContinuousConfig {
   dilutionRate: number;      // h⁻¹ — D = F/V
   feedSubstrate: number;     // g/L
+  batchStartupTime: number;  // hours — batch phase before continuous flow starts
 }
 
 export const DEFAULT_CONTINUOUS_CONFIG: ContinuousConfig = {
   dilutionRate: 0.15,
   feedSubstrate: 100,
+  batchStartupTime: 12,
 };

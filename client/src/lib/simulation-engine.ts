@@ -8,6 +8,9 @@ function monod(S: number, muMax: number, Ks: number): number {
   return S <= 0 ? 0 : muMax * S / (Ks + S);
 }
 
+// Death/decay rate constant (h⁻¹) — cells die when substrate is exhausted
+const kd = 0.01;
+
 type DerivFn = (t: number, y: number[]) => number[];
 
 function rk4Step(f: DerivFn, t: number, y: number[], dt: number): number[] {
@@ -55,7 +58,7 @@ export function runBatchSimulation(k: KineticParams, c: ReactorConditions, cfg: 
     const [X, S] = s;
     if (S <= 0 || X <= 0) return [0, 0, 0];
     const mu = monod(S, muMax, Ks);
-    return [mu * X, -(1 / Yxs) * mu * X, alpha * mu * X + beta * X];
+    return [(mu - kd) * X, -(1 / Yxs) * mu * X, alpha * mu * X + beta * X];
   };
   const raw = integrate(deriv, [c.X0, c.S0, c.P0], cfg.totalTime, cfg.dt);
   const biomass = raw.states.map(s => s[0]), substrate = raw.states.map(s => s[1]), product = raw.states.map(s => s[2]);
@@ -69,10 +72,10 @@ export function runFedBatchSimulation(k: KineticParams, c: ReactorConditions, cf
     const [X, S, P, V] = s;
     if (X <= 0 || V <= 0) return [0, 0, 0, 0];
     const mu = monod(S, muMax, Ks);
-    let F = V < fb.maxVolume ? fb.feedRate : 0;
+    let F = (_t >= fb.feedStartTime && V < fb.maxVolume) ? fb.feedRate : 0;
     if (V + F * cfg.dt > fb.maxVolume) F = Math.max(0, (fb.maxVolume - V) / cfg.dt);
     const D = F / V;
-    return [mu * X - D * X, -(1 / Yxs) * mu * X + D * (fb.feedSubstrate - S), alpha * mu * X + beta * X - D * P, F];
+    return [(mu - kd) * X - D * X, -(1 / Yxs) * mu * X + D * (fb.feedSubstrate - S), alpha * mu * X + beta * X - D * P, F];
   };
   const raw = integrate(deriv, [c.X0, c.S0, c.P0, fb.initialVolume], cfg.totalTime, cfg.dt);
   const biomass = raw.states.map(s => s[0]), substrate = raw.states.map(s => s[1]), product = raw.states.map(s => s[2]);
@@ -83,11 +86,17 @@ export function runFedBatchSimulation(k: KineticParams, c: ReactorConditions, cf
 export function runContinuousSimulation(k: KineticParams, c: ReactorConditions, cfg: SimConfig, cst: ContinuousConfig): SimulationOutput {
   const { muMax, Ks, alpha, beta, Yxs } = k;
   const D = cst.dilutionRate, Sf = cst.feedSubstrate;
+  const switchTime = cst.batchStartupTime;
   const deriv: DerivFn = (_t, s) => {
     const [X, S, P] = s;
-    if (X <= 0) return [0, D * (Sf - S), -D * P];
+    if (X <= 0) return [0, 0, 0];
     const mu = monod(S, muMax, Ks);
-    return [(mu - D) * X, D * (Sf - S) - (1 / Yxs) * mu * X, alpha * mu * X + beta * X - D * P];
+    // Batch phase until switchTime
+    if (_t < switchTime) {
+      return [(mu - kd) * X, -(1 / Yxs) * mu * X, alpha * mu * X + beta * X];
+    }
+    // Continuous phase — feed on, flow out
+    return [(mu - kd - D) * X, D * (Sf - S) - (1 / Yxs) * mu * X, alpha * mu * X + beta * X - D * P];
   };
   const raw = integrate(deriv, [c.X0, c.S0, c.P0], cfg.totalTime, cfg.dt);
   const biomass = raw.states.map(s => s[0]), substrate = raw.states.map(s => s[1]), product = raw.states.map(s => s[2]);
