@@ -81,7 +81,7 @@ export const DEFAULT_KINETIC_PARAMS: KineticParameters = {
  * Typical lab-scale batch fermentation setup
  */
 export const DEFAULT_CONDITIONS: BioreactorConditions = {
-  temperature: 32.5,   // °C — middle of optimal range
+  temperature: 30,   // °C — middle of optimal range
   pH: 4.8,             // — middle of optimal range
   S0: 150.0,           // g/L — high-gravity fermentation
   X0: 0.5,             // g/L — standard inoculum

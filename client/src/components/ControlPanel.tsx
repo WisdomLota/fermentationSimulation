@@ -72,7 +72,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
         <div className="param-row">
           <div className="param-label">
             <span className="param-name">Temperature</span>
-            <span className="param-value-display">32.5<span className="param-unit">°C</span></span>
+            <span className="param-value-display">30<span className="param-unit">°C</span></span>
           </div>
         </div>
 

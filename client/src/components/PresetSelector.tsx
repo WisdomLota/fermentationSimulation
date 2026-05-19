@@ -25,7 +25,7 @@ const PRESETS: Preset[] = [
     id: 'default', name: 'Standard Lab Batch', category: 'standard',
     description: 'Typical lab-scale fermentation at 150 g/L glucose.',
     kinetics: { muMax: 0.45, Ks: 1.5, alpha: 2.2, beta: 0.1, Yxs: 0.12, Yps: 0.46 },
-    conditions: { temperature: 32.5, pH: 4.8, S0: 150, X0: 0.5, P0: 0 },
+    conditions: { temperature: 30, pH: 4.8, S0: 150, X0: 0.5, P0: 0 },
     config: { totalTime: 48, dt: 0.05 },
   },
   {

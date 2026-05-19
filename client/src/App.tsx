@@ -20,7 +20,7 @@ const DEFAULT_KINETICS: KineticParams = {
   muMax: 0.45, Ks: 1.5, alpha: 2.2, beta: 0.1, Yxs: 0.12, Yps: 0.46,
 };
 const DEFAULT_CONDITIONS: ReactorConditions = {
-  temperature: 32.5, pH: 4.8, S0: 150, X0: 0.5, P0: 0,
+  temperature: 30, pH: 4.8, S0: 150, X0: 0.5, P0: 0,
 };
 const DEFAULT_CONFIG: SimConfig = { totalTime: 48, dt: 0.05 };
 

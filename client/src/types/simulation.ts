@@ -76,7 +76,7 @@ export interface ParameterRange {
 
 export const PARAM_RANGES: Record<string, ParameterRange> = {
   temperature: {
-    min: 25, max: 40, step: 0.5, default: 32.5,
+    min: 25, max: 40, step: 0.5, default: 30,
     unit: '°C', label: 'Temperature',
     tooltip: 'Optimal range for S. cerevisiae: 30–35°C',
   },
