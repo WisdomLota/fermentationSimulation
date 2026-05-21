@@ -22,31 +22,31 @@ export const FedBatchControls: React.FC<FedBatchControlsProps> = ({ config, onCh
     <div className="section-header">Fed-batch parameters</div>
     <ParameterSlider
       name="feedRate" label="Feed rate" value={config.feedRate}
-      min={0.01} max={0.5} step={0.01} unit="L/h"
+      min={100} max={5000} step={100} unit="L/h"
       tooltip="Volume of fresh substrate added per hour."
       onChange={(_, v) => onChange('feedRate', v)}
     />
     <ParameterSlider
       name="feedSubstrate" label="Feed concentration" value={config.feedSubstrate}
-      min={100} max={800} step={10} unit="g/L"
-      tooltip="Glucose concentration in the feed stream."
+      min={100} max={250} step={10} unit="g/L"
+      tooltip="Glucose concentration in feed. Max 250 g/L (inhibition limit)."
       onChange={(_, v) => onChange('feedSubstrate', v)}
     />
     <ParameterSlider
       name="initialVolume" label="Initial volume" value={config.initialVolume}
-      min={0.5} max={5} step={0.1} unit="L"
+      min={10000} max={50000} step={5000} unit="L"
       tooltip="Starting reactor volume before feeding begins."
       onChange={(_, v) => onChange('initialVolume', v)}
     />
     <ParameterSlider
       name="maxVolume" label="Max volume" value={config.maxVolume}
-      min={1} max={10} step={0.5} unit="L"
+      min={50000} max={100000} step={10000} unit="L"
       tooltip="Feed stops when reactor reaches this volume."
       onChange={(_, v) => onChange('maxVolume', v)}
     />
     <ParameterSlider
       name="feedStartTime" label="Feed start time" value={config.feedStartTime}
-      min={0} max={48} step={1} unit="h"
+      min={0} max={72} step={1} unit="h"
       tooltip="Hour when feeding begins. Before this, reactor runs as batch."
       onChange={(_, v) => onChange('feedStartTime', v)}
     />
@@ -76,8 +76,8 @@ export const ContinuousControls: React.FC<ContinuousControlsProps> = ({ config, 
       />
       <ParameterSlider
         name="feedSubstrate" label="Feed concentration" value={config.feedSubstrate}
-        min={20} max={300} step={5} unit="g/L"
-        tooltip="Substrate concentration in the feed."
+        min={20} max={250} step={5} unit="g/L"
+        tooltip="Substrate concentration in feed. Max 250 g/L (inhibition limit)."
         onChange={(_, v) => onChange('feedSubstrate', v)}
       />
       <ParameterSlider

@@ -86,9 +86,9 @@ export const PARAM_RANGES: Record<string, ParameterRange> = {
     tooltip: 'Optimal range: 4.5–5.0. Below 3.5 inhibits growth.',
   },
   S0: {
-    min: 10, max: 300, step: 5, default: 150,
+    min: 10, max: 250, step: 5, default: 150,
     unit: 'g/L', label: 'Initial Substrate',
-    tooltip: 'Glucose concentration. High-gravity: 150–300 g/L.',
+    tooltip: 'Glucose concentration. Max 250 g/L (substrate inhibition above this).',
   },
   X0: {
     min: 0.1, max: 10, step: 0.1, default: 0.5,
@@ -138,10 +138,10 @@ export interface FedBatchConfig {
 }
 
 export const DEFAULT_FEDBATCH_CONFIG: FedBatchConfig = {
-  feedRate: 0.1,
+  feedRate: 500,
   feedSubstrate: 500,
-  initialVolume: 1.0,
-  maxVolume: 3.0,
+  initialVolume: 50000,
+  maxVolume: 150000,
   feedStartTime: 6,
 };
 

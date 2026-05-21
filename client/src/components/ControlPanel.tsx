@@ -146,6 +146,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           name="totalTime"
           value={config.totalTime}
           {...PARAM_RANGES.totalTime}
+          max={mode === 'batch' ? 168 : mode === 'fed-batch' ? 720 : 2160}
           onChange={(_, v) => onConfigChange('totalTime', v)}
         />
 

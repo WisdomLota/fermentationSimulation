@@ -55,9 +55,10 @@ function App() {
   const handleConditionsChange = useCallback((key: string, value: number) => {
     setConditions(prev => ({ ...prev, [key]: value }));
   }, []);
+  const maxTimeForMode = mode === 'batch' ? 168 : mode === 'fed-batch' ? 720 : 2160;
   const handleConfigChange = useCallback((key: string, value: number) => {
-    setConfig(prev => ({ ...prev, [key]: value }));
-  }, []);
+    setConfig(prev => ({ ...prev, [key]: key === 'totalTime' ? Math.min(value, maxTimeForMode) : value }));
+  }, [maxTimeForMode]);
   const handleFbChange = useCallback((key: string, value: number) => {
     setFbConfig(prev => ({ ...prev, [key]: value }));
   }, []);
@@ -71,8 +72,10 @@ function App() {
     setFbConfig(DEFAULT_FEDBATCH_CONFIG);
     setCstConfig(DEFAULT_CONTINUOUS_CONFIG);
   }, []);
-  const handlePresetSelect = useCallback((k: KineticParams, c: ReactorConditions, cfg: SimConfig) => {
+  const handlePresetSelect = useCallback((k: KineticParams, c: ReactorConditions, cfg: SimConfig, fb?: FedBatchConfig, cst?: ContinuousConfig) => {
     setKinetics(k); setConditions(c); setConfig(cfg);
+    if (fb) setFbConfig(fb);
+    if (cst) setCstConfig(cst);
   }, []);
 
   // Mode label for header
@@ -98,7 +101,8 @@ function App() {
       </header>
 
       <ControlPanel
-        mode={mode} kinetics={kinetics} conditions={conditions} config={config}
+        mode={mode} kinetics={kinetics} conditions={conditions}
+        config={{ ...config, totalTime: Math.min(config.totalTime, maxTimeForMode) }}
         onModeChange={setMode}
         onKineticsChange={handleKineticsChange}
         onConditionsChange={handleConditionsChange}
