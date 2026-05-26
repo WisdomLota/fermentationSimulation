@@ -51,11 +51,11 @@ export const SummaryPanel: React.FC<SummaryPanelProps> = ({ summary }) => {
         </div>
 
         <div className="summary-card">
-          <div className="summary-label">Ethanol Value</div>
+          <div className="summary-label">Batch Value</div>
           <div className="summary-value highlight">
-            ${(summary.finalEthanol * 0.789 * 0.80 / 1000).toFixed(2)}
+            ${((summary.finalEthanol * 100000 / 1000) / 0.789 * 1.00).toFixed(0)}
           </div>
-          <div className="summary-unit">per liter broth</div>
+          <div className="summary-unit">per batch (100 m³)</div>
         </div>
       </div>
 
@@ -65,7 +65,7 @@ export const SummaryPanel: React.FC<SummaryPanelProps> = ({ summary }) => {
         fontSize: '9px',
         color: 'var(--text-muted)',
       }}>
-        Ethanol price estimate: $0.80/kg · density 0.789 kg/L
+        Based on 100,000 L working volume · $1.00/L pure ethanol · density 0.789 kg/L
       </div>
     </div>
   );

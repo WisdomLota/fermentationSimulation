@@ -72,8 +72,8 @@ function App() {
     setFbConfig(DEFAULT_FEDBATCH_CONFIG);
     setCstConfig(DEFAULT_CONTINUOUS_CONFIG);
   }, []);
-  const handlePresetSelect = useCallback((k: KineticParams, c: ReactorConditions, cfg: SimConfig, fb?: FedBatchConfig, cst?: ContinuousConfig) => {
-    setKinetics(k); setConditions(c); setConfig(cfg);
+  const handlePresetSelect = useCallback((c: ReactorConditions, cfg: SimConfig, fb?: FedBatchConfig, cst?: ContinuousConfig) => {
+    setConditions(c); setConfig(cfg);
     if (fb) setFbConfig(fb);
     if (cst) setCstConfig(cst);
   }, []);
