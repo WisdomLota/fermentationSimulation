@@ -15,6 +15,7 @@ import type {
   FedBatchConfig, ContinuousConfig,
 } from './types/simulation';
 import { DEFAULT_FEDBATCH_CONFIG, DEFAULT_CONTINUOUS_CONFIG } from './types/simulation';
+import { DataExport } from './components/DataExport';
 
 const DEFAULT_KINETICS: KineticParams = {
   muMax: 0.45, Ks: 1.5, alpha: 2.2, beta: 0.1, Yxs: 0.12, Yps: 0.46,
@@ -42,6 +43,7 @@ function App() {
   const [config, setConfig] = useState<SimConfig>(DEFAULT_CONFIG);
   const [fbConfig, setFbConfig] = useState<FedBatchConfig>(DEFAULT_FEDBATCH_CONFIG);
   const [cstConfig, setCstConfig] = useState<ContinuousConfig>(DEFAULT_CONTINUOUS_CONFIG);
+  const [resetCount, setResetCount] = useState(0);
 
   const { data, isRunning, error, runTime, dataPoints } = useSimulation({
     mode, kinetics, conditions, config,
@@ -66,11 +68,13 @@ function App() {
     setCstConfig(prev => ({ ...prev, [key]: value }));
   }, []);
   const handleReset = useCallback(() => {
+    setMode('batch');
     setKinetics(DEFAULT_KINETICS);
     setConditions(DEFAULT_CONDITIONS);
     setConfig(DEFAULT_CONFIG);
     setFbConfig(DEFAULT_FEDBATCH_CONFIG);
     setCstConfig(DEFAULT_CONTINUOUS_CONFIG);
+    setResetCount(c => c + 1);
   }, []);
   const handlePresetSelect = useCallback((c: ReactorConditions, cfg: SimConfig, fb?: FedBatchConfig, cst?: ContinuousConfig) => {
     setConditions(c); setConfig(cfg);
@@ -90,13 +94,16 @@ function App() {
             Virtual Bioreactor · {modeLabel} Mode · v1.0
           </div>
         </div>
-        <div className="status-indicator">
-          <div className={`status-dot ${isRunning ? 'running' : data ? 'complete' : ''}`} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          {data && <DataExport data={data} mode={mode} />}
+          <div className="status-indicator">
+            <div className={`status-dot ${isRunning ? 'running' : data ? 'complete' : ''}`} />
           <span>
             {isRunning ? 'Simulating...'
               : data ? `Complete · ${dataPoints} pts · ${runTime}ms`
               : 'Ready'}
           </span>
+          </div>
         </div>
       </header>
 
@@ -116,7 +123,7 @@ function App() {
         {mode === 'continuous' && (
           <ContinuousControls config={cstConfig} muMax={kinetics.muMax} onChange={handleCstChange} />
         )}
-        <PresetSelector onSelect={handlePresetSelect} />
+        <PresetSelector key={resetCount} onSelect={handlePresetSelect} />
       </ControlPanel>
 
       <main className="viz-area">
