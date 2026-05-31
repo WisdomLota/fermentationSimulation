@@ -151,7 +151,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
         />
 
         <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
-          <button className="run-button">▶ Run Simulation</button>
+          <button className="run-button" onClick={() => onConfigChange('totalTime', config.totalTime)}>▶ Run Simulation</button>
         </div>
         <button className="reset-button" onClick={onReset} style={{ marginTop: '8px' }}>
           ↻ Reset Parameters

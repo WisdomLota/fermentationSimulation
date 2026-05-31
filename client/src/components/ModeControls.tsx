@@ -40,7 +40,7 @@ export const FedBatchControls: React.FC<FedBatchControlsProps> = ({ config, onCh
     />
     <ParameterSlider
       name="maxVolume" label="Max volume" value={config.maxVolume}
-      min={50000} max={100000} step={10000} unit="L"
+      min={50000} max={150000} step={10000} unit="L"
       tooltip="Feed stops when reactor reaches this volume."
       onChange={(_, v) => onChange('maxVolume', v)}
     />

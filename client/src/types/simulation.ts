@@ -142,7 +142,7 @@ export const DEFAULT_FEDBATCH_CONFIG: FedBatchConfig = {
   feedSubstrate: 500,
   initialVolume: 50000,
   maxVolume: 150000,
-  feedStartTime: 6,
+  feedStartTime: 6
 };
 
 // ── Continuous (CSTR) specific config ─────────────────

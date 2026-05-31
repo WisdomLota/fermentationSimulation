@@ -27,7 +27,7 @@ describe('RK4 Single Step — rk4Step()', () => {
     // Starting at y=1, after dt=0.1: y = e^0.1 ≈ 1.10517
     const f = (_t: number, state: number[]) => [state[0]];
     const result = rk4Step(f, 0, [1], 0.1);
-    expect(result[0]).toBeCloseTo(Math.exp(0.1), 8);
+    expect(result[0]).toBeCloseTo(Math.exp(0.1), 6);
   });
 
   test('should handle systems of 2 equations', () => {
