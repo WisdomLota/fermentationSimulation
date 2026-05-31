@@ -23,6 +23,7 @@ interface ControlPanelProps {
   onKineticsChange: (key: string, value: number) => void;
   onConditionsChange: (key: string, value: number) => void;
   onConfigChange: (key: string, value: number) => void;
+  onRun: () => void;
   onReset: () => void;
   children?: React.ReactNode;
 }
@@ -36,6 +37,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   onConditionsChange,
   onConfigChange,
   onReset,
+  onRun,
   children,
 }) => {
   return (
@@ -151,7 +153,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
         />
 
         <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
-          <button className="run-button" onClick={() => onConfigChange('totalTime', config.totalTime)}>▶ Run Simulation</button>
+          <button className="run-button" onClick={onRun}>▶ Run Simulation</button>
         </div>
         <button className="reset-button" onClick={onReset} style={{ marginTop: '8px' }}>
           ↻ Reset Parameters

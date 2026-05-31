@@ -16,6 +16,7 @@ interface UseSimulationProps {
   config: SimConfig;
   fedBatchConfig: FedBatchConfig;
   continuousConfig: ContinuousConfig;
+  runTrigger?: number;
 }
 
 interface UseSimulationReturn {
@@ -24,10 +25,11 @@ interface UseSimulationReturn {
   error: string | null;
   runTime: number | null;
   dataPoints: number | null;
+  run: () => void;
 }
 
 export function useSimulation({
-  mode, kinetics, conditions, config, fedBatchConfig, continuousConfig,
+  mode, kinetics, conditions, config, fedBatchConfig, continuousConfig, runTrigger,
 }: UseSimulationProps): UseSimulationReturn {
   const [data, setData] = useState<SimulationOutput | null>(null);
   const [isRunning, setIsRunning] = useState(false);
@@ -37,6 +39,7 @@ export function useSimulation({
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
   const runSimulation = useCallback(() => {
+    setData(null);
     setIsRunning(true);
     setError(null);
     try {
@@ -67,7 +70,7 @@ export function useSimulation({
     } finally {
       setIsRunning(false);
     }
-  }, [mode, kinetics, conditions, config, fedBatchConfig, continuousConfig]);
+  }, [mode, kinetics, conditions, config, fedBatchConfig, continuousConfig, runTrigger]);
 
   useEffect(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
@@ -75,5 +78,5 @@ export function useSimulation({
     return () => { if (timerRef.current) clearTimeout(timerRef.current); };
   }, [runSimulation]);
 
-  return { data, isRunning, error, runTime, dataPoints };
+  return { data, isRunning, error, runTime, dataPoints, run: runSimulation };
 }

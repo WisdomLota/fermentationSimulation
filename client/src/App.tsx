@@ -44,12 +44,20 @@ function App() {
   const [fbConfig, setFbConfig] = useState<FedBatchConfig>(DEFAULT_FEDBATCH_CONFIG);
   const [cstConfig, setCstConfig] = useState<ContinuousConfig>(DEFAULT_CONTINUOUS_CONFIG);
   const [resetCount, setResetCount] = useState(0);
+  const [runTrigger, setRunTrigger] = useState(0);
+  
 
-  const { data, isRunning, error, runTime, dataPoints } = useSimulation({
+  const { data, isRunning, error, runTime, dataPoints, run } = useSimulation({
     mode, kinetics, conditions, config,
     fedBatchConfig: fbConfig,
     continuousConfig: cstConfig,
+    runTrigger,
   });
+
+  const handleRun = useCallback(() => {
+    run();
+    setRunTrigger(count => count + 1);
+  }, [run]);
 
   const handleKineticsChange = useCallback((key: string, value: number) => {
     setKinetics(prev => ({ ...prev, [key]: value }));
@@ -114,6 +122,7 @@ function App() {
         onKineticsChange={handleKineticsChange}
         onConditionsChange={handleConditionsChange}
         onConfigChange={handleConfigChange}
+        onRun={handleRun}
         onReset={handleReset}
       >
         {/* Mode-specific controls */}
@@ -139,15 +148,24 @@ function App() {
 
         {data && (
           <>
-            <ConcentrationChart data={data}
+            <ConcentrationChart
+              key={`growth-${runTrigger}`}
+              data={data}
               title={`Biomass (X) & Substrate (S) vs time — ${modeLabel}`}
-              curves={GROWTH_CURVES} />
-            <ConcentrationChart data={data}
+              curves={GROWTH_CURVES}
+            />
+            <ConcentrationChart
+              key={`product-${runTrigger}`}
+              data={data}
               title={`Ethanol concentration (P) vs time — ${modeLabel}`}
-              curves={PRODUCT_CURVES} />
-            <ConcentrationChart data={data}
+              curves={PRODUCT_CURVES}
+            />
+            <ConcentrationChart
+              key={`rate-${runTrigger}`}
+              data={data}
               title="Specific growth rate (μ) vs time"
-              curves={RATE_CURVES} />
+              curves={RATE_CURVES}
+            />
             <GrowthPhaseIndicator data={data} muMax={kinetics.muMax} />
             <SummaryPanel summary={data.summary} />
           </>
