@@ -69,7 +69,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
 
       {/* ── Bioreactor Conditions ── */}
       <div className="panel-section">
-        <div className="section-header">Bioreactor Conditions</div>
+        <div className="section-header">Bioreactor Conditions (Carob Pod Substrate)</div>
 
         <div className="param-row">
           <div className="param-label">

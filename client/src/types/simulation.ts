@@ -86,9 +86,9 @@ export const PARAM_RANGES: Record<string, ParameterRange> = {
     tooltip: 'Optimal range: 4.5–5.0. Below 3.5 inhibits growth.',
   },
   S0: {
-    min: 10, max: 250, step: 5, default: 150,
-    unit: 'g/L', label: 'Initial Substrate',
-    tooltip: 'Glucose concentration. Max 250 g/L (substrate inhibition above this).',
+    min: 10, max: 250, step: 5, default: 120,
+    unit: 'g/L', label: 'Initial Sugar Conc.',
+    tooltip: 'Carob pod extract sugar concentration (sucrose/glucose/fructose). Max 250 g/L (inhibition above this).',
   },
   X0: {
     min: 0.1, max: 10, step: 0.1, default: 0.5,
@@ -96,14 +96,14 @@ export const PARAM_RANGES: Record<string, ParameterRange> = {
     tooltip: 'Yeast inoculum concentration.',
   },
   muMax: {
-    min: 0.1, max: 0.8, step: 0.01, default: 0.45,
+    min: 0.1, max: 0.8, step: 0.01, default: 0.35,
     unit: 'h⁻¹', label: 'μ_max',
-    tooltip: 'Maximum specific growth rate.',
+    tooltip: 'Maximum specific growth rate on carob-derived sugars.'
   },
   Ks: {
-    min: 0.1, max: 10, step: 0.1, default: 1.5,
+    min: 1.5, max: 3.0, step: 0.1, default: 2.0,
     unit: 'g/L', label: 'K_s',
-    tooltip: 'Half-saturation constant (Monod).',
+    tooltip: 'Half-saturation constant (Monod) — higher for sucrose-rich carob substrate vs pure glucose.',
   },
   alpha: {
     min: 0.5, max: 5.0, step: 0.1, default: 2.2,
@@ -139,7 +139,7 @@ export interface FedBatchConfig {
 
 export const DEFAULT_FEDBATCH_CONFIG: FedBatchConfig = {
   feedRate: 500,
-  feedSubstrate: 500,
+  feedSubstrate: 150,
   initialVolume: 50000,
   maxVolume: 150000,
   feedStartTime: 6
@@ -155,6 +155,6 @@ export interface ContinuousConfig {
 
 export const DEFAULT_CONTINUOUS_CONFIG: ContinuousConfig = {
   dilutionRate: 0.15,
-  feedSubstrate: 100,
+  feedSubstrate: 120,
   batchStartupTime: 12,
 };

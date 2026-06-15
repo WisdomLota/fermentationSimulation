@@ -29,7 +29,7 @@ export const FedBatchControls: React.FC<FedBatchControlsProps> = ({ config, onCh
     <ParameterSlider
       name="feedSubstrate" label="Feed concentration" value={config.feedSubstrate}
       min={100} max={250} step={10} unit="g/L"
-      tooltip="Glucose concentration in feed. Max 250 g/L (inhibition limit)."
+      tooltip="Carob extract sugar concentration in feed. Max 250 g/L (inhibition limit)."
       onChange={(_, v) => onChange('feedSubstrate', v)}
     />
     <ParameterSlider
@@ -77,7 +77,7 @@ export const ContinuousControls: React.FC<ContinuousControlsProps> = ({ config, 
       <ParameterSlider
         name="feedSubstrate" label="Feed concentration" value={config.feedSubstrate}
         min={20} max={250} step={5} unit="g/L"
-        tooltip="Substrate concentration in feed. Max 250 g/L (inhibition limit)."
+        tooltip="Carob extract substrate concentration in feed. Max 250 g/L (inhibition limit)."
         onChange={(_, v) => onChange('feedSubstrate', v)}
       />
       <ParameterSlider
