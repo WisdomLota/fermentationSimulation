@@ -4,8 +4,10 @@
 
 import type { KineticParams, ReactorConditions, SimConfig, SimulationOutput, FedBatchConfig, ContinuousConfig } from '../types/simulation';
 
-function monod(S: number, muMax: number, Ks: number): number {
-  return S <= 0 ? 0 : muMax * S / (Ks + S);
+function monod(S: number, muMax: number, Ks: number, P: number = 0, Pmax: number = 100): number {
+  if (S <= 0) return 0;
+  const inhibition = Math.max(0, 1 - P / Pmax);
+  return (muMax * S / (Ks + S)) * inhibition;
 }
 
 // Death/decay rate constant (h⁻¹) — cells die when substrate is exhausted
@@ -40,7 +42,7 @@ function integrate(f: DerivFn, init: number[], totalTime: number, dt: number) {
   return { time, states };
 }
 
-function buildSummary(S0: number, biomass: number[], substrate: number[], product: number[], time: number[], muMax: number, Ks: number) {
+function buildSummary(S0: number, biomass: number[], substrate: number[], product: number[], time: number[], muMax: number, Ks: number, Pmax: number) {
   const n = biomass.length - 1;
   const finalBiomass = biomass[n], finalEthanol = product[n], residualSubstrate = substrate[n];
   const substrateConsumed = S0 - residualSubstrate;
@@ -48,58 +50,61 @@ function buildSummary(S0: number, biomass: number[], substrate: number[], produc
   const yieldEfficiency = Math.min((actualYield / 0.511) * 100, 100);
   const t90Idx = substrate.findIndex(S => S <= S0 * 0.10);
   const time90 = t90Idx >= 0 ? time[t90Idx] : null;
-  const peakGrowthRate = Math.max(...substrate.map(S => monod(S, muMax, Ks)));
+  const peakGrowthRate = Math.max(...substrate.map((S, i) => monod(S, muMax, Ks, product[i], Pmax)));
   return { finalBiomass, finalEthanol, residualSubstrate, substrateConsumed, yieldEfficiency, time90, peakGrowthRate };
 }
 
 export function runBatchSimulation(k: KineticParams, c: ReactorConditions, cfg: SimConfig): SimulationOutput {
-  const { muMax, Ks, alpha, beta, Yxs } = k;
+  const { muMax, Ks, alpha, beta, Yxs, Pmax } = k;
   const deriv: DerivFn = (_t, s) => {
-    const [X, S] = s;
+    const [X, S, P] = s;
     if (S <= 0 || X <= 0) return [0, 0, 0];
-    const mu = monod(S, muMax, Ks);
-    return [(mu - kd) * X, -(1 / Yxs) * mu * X, alpha * mu * X + beta * X];
+    const mu = monod(S, muMax, Ks, P, Pmax);
+    const inhib = Math.max(0, 1 - P / Pmax);
+    return [(mu - kd) * X, -(1 / Yxs) * mu * X, alpha * mu * X + beta * X * inhib];
   };
   const raw = integrate(deriv, [c.X0, c.S0, c.P0], cfg.totalTime, cfg.dt);
   const biomass = raw.states.map(s => s[0]), substrate = raw.states.map(s => s[1]), product = raw.states.map(s => s[2]);
-  const growthRate = substrate.map(S => monod(S, muMax, Ks));
-  return { time: raw.time, biomass, substrate, product, growthRate, summary: buildSummary(c.S0, biomass, substrate, product, raw.time, muMax, Ks) };
+  const growthRate = substrate.map((S, i) => monod(S, muMax, Ks, product[i], Pmax));
+  return { time: raw.time, biomass, substrate, product, growthRate, summary: buildSummary(c.S0, biomass, substrate, product, raw.time, muMax, Ks, Pmax) };
 }
 
 export function runFedBatchSimulation(k: KineticParams, c: ReactorConditions, cfg: SimConfig, fb: FedBatchConfig): SimulationOutput {
-  const { muMax, Ks, alpha, beta, Yxs } = k;
+  const { muMax, Ks, alpha, beta, Yxs, Pmax } = k;
   const deriv: DerivFn = (_t, s) => {
     const [X, S, P, V] = s;
     if (X <= 0 || V <= 0) return [0, 0, 0, 0];
-    const mu = monod(S, muMax, Ks);
+    const mu = monod(S, muMax, Ks, P, Pmax);
+    const inhib = Math.max(0, 1 - P / Pmax);
     let F = (_t >= fb.feedStartTime && V < fb.maxVolume) ? fb.feedRate : 0;
     if (V + F * cfg.dt > fb.maxVolume) F = Math.max(0, (fb.maxVolume - V) / cfg.dt);
     const D = F / V;
-    return [(mu - kd) * X - D * X, -(1 / Yxs) * mu * X + D * (fb.feedSubstrate - S), alpha * mu * X + beta * X - D * P, F];
+    return [(mu - kd) * X - D * X, -(1 / Yxs) * mu * X + D * (fb.feedSubstrate - S), alpha * mu * X + beta * X * inhib - D * P, F];
   };
   const raw = integrate(deriv, [c.X0, c.S0, c.P0, fb.initialVolume], cfg.totalTime, cfg.dt);
   const biomass = raw.states.map(s => s[0]), substrate = raw.states.map(s => s[1]), product = raw.states.map(s => s[2]);
-  const growthRate = substrate.map(S => monod(S, muMax, Ks));
-  return { time: raw.time, biomass, substrate, product, growthRate, summary: buildSummary(c.S0, biomass, substrate, product, raw.time, muMax, Ks) };
+  const growthRate = substrate.map((S, i) => monod(S, muMax, Ks, product[i], Pmax));
+  return { time: raw.time, biomass, substrate, product, growthRate, summary: buildSummary(c.S0, biomass, substrate, product, raw.time, muMax, Ks, Pmax) };
 }
 
 export function runContinuousSimulation(k: KineticParams, c: ReactorConditions, cfg: SimConfig, cst: ContinuousConfig): SimulationOutput {
-  const { muMax, Ks, alpha, beta, Yxs } = k;
+  const { muMax, Ks, alpha, beta, Yxs, Pmax } = k;
   const D = cst.dilutionRate, Sf = cst.feedSubstrate;
   const switchTime = cst.batchStartupTime;
   const deriv: DerivFn = (_t, s) => {
     const [X, S, P] = s;
     if (X <= 0) return [0, 0, 0];
-    const mu = monod(S, muMax, Ks);
+    const mu = monod(S, muMax, Ks, P, Pmax);
+    const inhib = Math.max(0, 1 - P / Pmax);
     // Batch phase until switchTime
     if (_t < switchTime) {
-      return [(mu - kd) * X, -(1 / Yxs) * mu * X, alpha * mu * X + beta * X];
+      return [(mu - kd) * X, -(1 / Yxs) * mu * X, alpha * mu * X + beta * X * inhib];
     }
     // Continuous phase — feed on, flow out
-    return [(mu - kd - D) * X, D * (Sf - S) - (1 / Yxs) * mu * X, alpha * mu * X + beta * X - D * P];
+    return [(mu - kd - D) * X, D * (Sf - S) - (1 / Yxs) * mu * X, alpha * mu * X + beta * X * inhib - D * P];
   };
   const raw = integrate(deriv, [c.X0, c.S0, c.P0], cfg.totalTime, cfg.dt);
   const biomass = raw.states.map(s => s[0]), substrate = raw.states.map(s => s[1]), product = raw.states.map(s => s[2]);
-  const growthRate = substrate.map(S => monod(S, muMax, Ks));
-  return { time: raw.time, biomass, substrate, product, growthRate, summary: buildSummary(c.S0, biomass, substrate, product, raw.time, muMax, Ks) };
+  const growthRate = substrate.map((S, i) => monod(S, muMax, Ks, product[i], Pmax));
+  return { time: raw.time, biomass, substrate, product, growthRate, summary: buildSummary(c.S0, biomass, substrate, product, raw.time, muMax, Ks, Pmax) };
 }

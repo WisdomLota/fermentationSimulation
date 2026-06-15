@@ -26,6 +26,7 @@ export interface KineticParams {
   beta: number;     // g_P/(g_X·h)
   Yxs: number;      // g_X/g_S
   Yps: number;      // g_P/g_S
+  Pmax: number;     // g/L — ethanol conc. at which growth is fully inhibited
 }
 
 export interface ReactorConditions {
@@ -98,7 +99,7 @@ export const PARAM_RANGES: Record<string, ParameterRange> = {
   muMax: {
     min: 0.1, max: 0.8, step: 0.01, default: 0.35,
     unit: 'h⁻¹', label: 'μ_max',
-    tooltip: 'Maximum specific growth rate on carob-derived sugars.'
+    tooltip: 'Maximum specific growth rate on carob-derived sugars.',
   },
   Ks: {
     min: 1.5, max: 3.0, step: 0.1, default: 2.0,
@@ -111,7 +112,7 @@ export const PARAM_RANGES: Record<string, ParameterRange> = {
     tooltip: 'Growth-associated product formation constant.',
   },
   beta: {
-    min: 0.0, max: 0.5, step: 0.01, default: 0.1,
+    min: 0.0, max: 0.5, step: 0.01, default: 0.05,
     unit: 'g/(g·h)', label: 'β (maintenance)',
     tooltip: 'Non-growth-associated product formation constant.',
   },
@@ -119,6 +120,11 @@ export const PARAM_RANGES: Record<string, ParameterRange> = {
     min: 0.05, max: 0.25, step: 0.01, default: 0.12,
     unit: 'g/g', label: 'Y_xs',
     tooltip: 'Biomass yield on substrate.',
+  },
+  Pmax: {
+    min: 50, max: 150, step: 5, default: 90,
+    unit: 'g/L', label: 'P_max',
+    tooltip: 'Ethanol concentration at which growth is fully inhibited (Levenspiel model).',
   },
   totalTime: {
     min: 24, max: 2160, step: 24, default: 48,

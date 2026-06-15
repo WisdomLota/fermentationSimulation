@@ -18,7 +18,7 @@ import { DEFAULT_FEDBATCH_CONFIG, DEFAULT_CONTINUOUS_CONFIG } from './types/simu
 import { DataExport } from './components/DataExport';
 
 const DEFAULT_KINETICS: KineticParams = {
-  muMax: 0.35, Ks: 2.0, alpha: 2.2, beta: 0.1, Yxs: 0.12, Yps: 0.46,
+  muMax: 0.35, Ks: 2.0, alpha: 2.2, beta: 0.05, Yxs: 0.12, Yps: 0.46, Pmax: 90,
 };
 const DEFAULT_CONDITIONS: ReactorConditions = {
   temperature: 30, pH: 4.8, S0: 120, X0: 0.5, P0: 0,

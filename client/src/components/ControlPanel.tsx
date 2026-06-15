@@ -134,8 +134,8 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
 
         <div className="param-row">
           <div className="param-label">
-            <span className="param-name">Y_xs</span>
-            <span className="param-value-display">{kinetics.Yxs}<span className="param-unit">g/g</span></span>
+            <span className="param-name">P_max</span>
+            <span className="param-value-display">{kinetics.Pmax}<span className="param-unit">g/L</span></span>
           </div>
         </div>
       </div>
