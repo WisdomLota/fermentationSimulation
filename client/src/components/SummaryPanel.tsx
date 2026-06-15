@@ -11,9 +11,10 @@ import type { SimulationSummary } from '../types/simulation';
 
 interface SummaryPanelProps {
   summary: SimulationSummary;
+  workingVolume: number;
 }
 
-export const SummaryPanel: React.FC<SummaryPanelProps> = ({ summary }) => {
+export const SummaryPanel: React.FC<SummaryPanelProps> = ({ summary, workingVolume }) => {
   return (
     <div className="panel-section">
       <div className="section-header">Simulation Summary</div>
@@ -53,9 +54,9 @@ export const SummaryPanel: React.FC<SummaryPanelProps> = ({ summary }) => {
         <div className="summary-card">
           <div className="summary-label">Batch Value</div>
           <div className="summary-value highlight">
-            ${((summary.finalEthanol * 100000 / 1000) / 0.789 * 1.00).toFixed(0)}
+            ${((summary.finalEthanol * workingVolume / 1000) / 0.789 * 1.00).toFixed(0)}
           </div>
-          <div className="summary-unit">per batch (100 m³)</div>
+          <div className="summary-unit">per batch ({(workingVolume / 1000).toFixed(0)} m³)</div>
         </div>
       </div>
 
@@ -65,7 +66,7 @@ export const SummaryPanel: React.FC<SummaryPanelProps> = ({ summary }) => {
         fontSize: '9px',
         color: 'var(--text-muted)',
       }}>
-        Based on 100,000 L working volume · $1.00/L pure ethanol · density 0.789 kg/L
+        Based on {workingVolume.toLocaleString()} L working volume · $1.00/L pure ethanol · density 0.789 kg/L
       </div>
     </div>
   );
