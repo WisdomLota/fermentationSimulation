@@ -23,7 +23,7 @@ export const FedBatchControls: React.FC<FedBatchControlsProps> = ({ config, onCh
     <div className="section-header">Fed-batch parameters</div>
     <ParameterSlider
       name="feedRate" label="Feed rate" value={config.feedRate}
-      min={100} max={5000} step={100} unit="L/h"
+      min={100} max={15000} step={250} unit="L/h"
       tooltip="Volume of fresh substrate added per hour."
       onChange={(_, v) => onChange('feedRate', v)}
     />

@@ -138,7 +138,7 @@ export interface FedBatchConfig {
 }
 
 export const DEFAULT_FEDBATCH_CONFIG: FedBatchConfig = {
-  feedRate: 500,
+  feedRate: 12000,
   feedSubstrate: 150,
   initialVolume: 50000,
   maxVolume: 150000,
