@@ -9,6 +9,7 @@
 
 import { ParameterSlider } from './ParameterSlider';
 import type { FedBatchConfig, ContinuousConfig } from '../types/simulation';
+import { kd } from '../lib/simulation-engine';
 
 // ── Fed-Batch Controls ────────────────────────────────
 
@@ -63,7 +64,7 @@ interface ContinuousControlsProps {
 
 export const ContinuousControls: React.FC<ContinuousControlsProps> = ({ config, muMax, onChange }) => {
   // Calculate critical dilution rate
-  const Dcrit = muMax * config.feedSubstrate / (1.5 + config.feedSubstrate);
+  const Dcrit = muMax - kd; // kd = 0.01, death rate from engine
 
   return (
     <div className="panel-section">

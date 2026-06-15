@@ -9,7 +9,7 @@ function monod(S: number, muMax: number, Ks: number): number {
 }
 
 // Death/decay rate constant (h⁻¹) — cells die when substrate is exhausted
-const kd = 0.01;
+export const kd = 0.01;
 
 type DerivFn = (t: number, y: number[]) => number[];
 

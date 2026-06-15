@@ -108,7 +108,7 @@ export const ConcentrationChart: React.FC<ConcentrationChartProps> = ({
           <YAxis
             stroke="#605e56"
             tick={{ fill: '#7a7668', fontSize: 10, fontFamily: '"IBM Plex Mono", monospace' }}
-            domain={curves.some(c => c.key === 'substrate') ? [0, 250] : ['auto', 'auto']}
+            domain={curves.some(c => c.key === 'substrate') ? ['auto', 'auto'] : ['auto', 'auto']}
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend
