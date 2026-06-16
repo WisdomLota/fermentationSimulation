@@ -7,19 +7,17 @@
  */
 
 import React from 'react';
-import type { SimulationSummary, FedBatchConfig, ContinuousConfig, ReactorMode } from '../types/simulation';
+import type { SimulationSummary, FedBatchConfig, ReactorMode } from '../types/simulation';
 
 interface SummaryPanelProps {
   summary: SimulationSummary;
   workingVolume: number;
   S0: number;
   mode: ReactorMode;
-  totalTime: number;
   fbConfig: FedBatchConfig;
-  cstConfig: ContinuousConfig;
 }
 
-export const SummaryPanel: React.FC<SummaryPanelProps> = ({ summary, workingVolume, S0, mode, totalTime, fbConfig, cstConfig }) => {
+export const SummaryPanel: React.FC<SummaryPanelProps> = ({ summary, workingVolume, S0, mode, fbConfig }) => {
   // ── Revenue ──
   const batchValue = ((summary.finalEthanol * workingVolume / 1000) / 0.789) * 1.00;
 
