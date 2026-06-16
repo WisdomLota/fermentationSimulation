@@ -7,15 +7,19 @@
  */
 
 import React from 'react';
-import type { SimulationSummary } from '../types/simulation';
+import type { SimulationSummary, FedBatchConfig, ContinuousConfig, ReactorMode } from '../types/simulation';
 
 interface SummaryPanelProps {
   summary: SimulationSummary;
   workingVolume: number;
   S0: number;
+  mode: ReactorMode;
+  totalTime: number;
+  fbConfig: FedBatchConfig;
+  cstConfig: ContinuousConfig;
 }
 
-export const SummaryPanel: React.FC<SummaryPanelProps> = ({ summary, workingVolume, S0 }) => {
+export const SummaryPanel: React.FC<SummaryPanelProps> = ({ summary, workingVolume, S0, mode, totalTime, fbConfig, cstConfig }) => {
   // ── Revenue ──
   const batchValue = ((summary.finalEthanol * workingVolume / 1000) / 0.789) * 1.00;
 
@@ -23,7 +27,22 @@ export const SummaryPanel: React.FC<SummaryPanelProps> = ({ summary, workingVolu
   // Feedstock: carob pods at $0.15/kg, assuming 45% fermentable sugar content by dry weight
   const carobPricePerKg = 0.15;
   const sugarFraction = 0.45;
-  const sugarMassKg = (S0 * workingVolume) / 1000;
+  
+  let sugarMassKg: number;
+  if (mode === 'batch') {
+    // Initial sugar charge only
+    sugarMassKg = (S0 * workingVolume) / 1000;
+  } else if (mode === 'fed-batch') {
+    // Initial charge + sugar fed during filling
+    const fillingTime = (fbConfig.maxVolume - fbConfig.initialVolume) / fbConfig.feedRate;
+    const fedSugarKg = (fbConfig.feedRate * fbConfig.feedSubstrate * fillingTime) / 1000;
+    const initialSugarKg = (S0 * fbConfig.initialVolume) / 1000;
+    sugarMassKg = initialSugarKg + fedSugarKg;
+  } else {
+    // Continuous: use actual substrate consumed from simulation output
+    sugarMassKg = (summary.substrateConsumed * workingVolume) / 1000;
+  }
+  
   const carobMassKg = sugarMassKg / sugarFraction;
   const feedstockCost = carobMassKg * carobPricePerKg;
 
@@ -106,7 +125,7 @@ export const SummaryPanel: React.FC<SummaryPanelProps> = ({ summary, workingVolu
       }}>
         Based on {workingVolume.toLocaleString()} L working volume · $1.00/L pure ethanol · density 0.789 kg/L
         <br />
-        Cost assumptions: carob pods $0.15/kg (45% fermentable sugar) · $1000 fixed overhead (energy, labor, water, misc.) per batch
+        Cost assumptions: carob pods $0.15/kg (45% fermentable sugar) · $1000 fixed overhead · feedstock cost accounts for all sugar input ({mode} mode)
       </div>
     </div>
   );

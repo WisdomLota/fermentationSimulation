@@ -167,7 +167,15 @@ function App() {
               curves={RATE_CURVES}
             />
             <GrowthPhaseIndicator data={data} muMax={kinetics.muMax} />
-            <SummaryPanel summary={data.summary} workingVolume={mode === 'fed-batch' ? fbConfig.maxVolume : 100000} S0={conditions.S0} />
+            <SummaryPanel
+              summary={data.summary}
+              workingVolume={mode === 'fed-batch' ? fbConfig.maxVolume : 100000}
+              S0={conditions.S0}
+              mode={mode}
+              totalTime={config.totalTime}
+              fbConfig={fbConfig}
+              cstConfig={cstConfig}
+            />
           </>
         )}
 

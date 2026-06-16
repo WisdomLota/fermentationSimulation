@@ -82,7 +82,7 @@ export const ContinuousControls: React.FC<ContinuousControlsProps> = ({ config, 
         onChange={(_, v) => onChange('feedSubstrate', v)}
       />
       <ParameterSlider
-        name="batchStartupTime" label="Batch startup phase" value={config.batchStartupTime}
+        name="batchStartupTime" label="Batch Time" value={config.batchStartupTime}
         min={1} max={48} step={1} unit="h"
         tooltip="Hours of batch operation before continuous flow begins. Lets cells grow first."
         onChange={(_, v) => onChange('batchStartupTime', v)}
