@@ -172,9 +172,7 @@ function App() {
               workingVolume={mode === 'fed-batch' ? fbConfig.maxVolume : 100000}
               S0={conditions.S0}
               mode={mode}
-              totalTime={config.totalTime}
               fbConfig={fbConfig}
-              cstConfig={cstConfig}
             />
           </>
         )}
