@@ -16,11 +16,11 @@
 
 :root {
   /* Instrument panel colors */
-  --panel-bg: #1a1a1e;
-  --panel-surface: #222228;
-  --panel-raised: #2a2a32;
-  --panel-inset: #141418;
-  --panel-border: #3a3a42;
+  --panel-bg: #F5F5F0;
+  --panel-surface: #FFFFFF;
+  --panel-raised: #EFEFEA;
+  --panel-inset: #E0E0DA;
+  --panel-border: #C8C4BC;
 
   /* Brass / copper accents */
   --brass-primary: #c8a84e;
@@ -34,15 +34,15 @@
   --phosphor-amber: #ffbf47;
   --phosphor-blue: #47b4ff;
   --phosphor-red: #ff6b6b;
-  --screen-bg: #0a0f0a;
-  --screen-grid: #1a2e1a;
+  --screen-bg: #FFFFFF;
+  --screen-bg: #FFFFFF;
 
   /* Text hierarchy */
-  --text-primary: #e8e4d8;
-  --text-secondary: #9a9688;
-  --text-muted: #605e56;
+  --text-primary: #1A1A1A;
+  --text-secondary: #444440;
+  --text-muted: #888880;
   --text-label: #c8a84e;
-  --text-value: #e8e4d8;
+  --text-value: #1A1A1A;
   --text-unit: #7a7668;
 
   /* Status colors */
@@ -321,16 +321,6 @@ body {
   border-radius: var(--border-radius-lg);
   padding: var(--gap-md);
   position: relative;
-  /* Subtle scanline effect */
-  background-image:
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(255, 255, 255, 0.01) 2px,
-      rgba(255, 255, 255, 0.01) 4px
-    );
-  background-size: 100% 4px;
 }
 
 .chart-panel::before {
