@@ -45,6 +45,7 @@ function App() {
   const [cstConfig, setCstConfig] = useState<ContinuousConfig>(DEFAULT_CONTINUOUS_CONFIG);
   const [resetCount, setResetCount] = useState(0);
   const [runTrigger, setRunTrigger] = useState(0);
+  const [isDark, setIsDark] = useState(false);
   
 
   const { data, isRunning, error, runTime, dataPoints, run } = useSimulation({
@@ -94,7 +95,7 @@ function App() {
   const modeLabel = mode === 'batch' ? 'Batch' : mode === 'fed-batch' ? 'Fed-Batch' : 'Continuous (CSTR)';
 
   return (
-    <div className="app-container">
+    <div className={`app-container${isDark ? ' dark' : ''}`}>
       <header className="app-header">
         <div>
           <h1 className="app-title">Fermentation Simulation Software</h1>
@@ -103,6 +104,22 @@ function App() {
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <button
+            onClick={() => setIsDark(d => !d)}
+            style={{
+              padding: '6px 12px',
+              background: 'transparent',
+              border: '1px solid var(--panel-border)',
+              borderRadius: '4px',
+              color: 'var(--text-secondary)',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '11px',
+              cursor: 'pointer',
+              letterSpacing: '1px',
+            }}
+          >
+            {isDark ? '☀ Light' : '☾ Dark'}
+          </button>
           {data && <DataExport data={data} mode={mode} />}
           <div className="status-indicator">
             <div className={`status-dot ${isRunning ? 'running' : data ? 'complete' : ''}`} />
